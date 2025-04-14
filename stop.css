@@ -1,0 +1,213 @@
+body {
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #222;
+    color: #181313;
+    margin: 0;
+}
+
+.watch-container {
+    position: relative;
+    width: 600px; /* Adjust container width */
+    height: 600px; /* Adjust container height */
+}
+
+.central-circle {
+    background-color: #e2e6d7;
+    border-radius: 35%;
+    width: 300px; /* Increased size */
+    height: 300px; /* Increased size */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 9px 5px 250px rgba(138, 164, 225, 0.7);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.time-display {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: rgb(41, 137, 36);
+    margin-bottom: 10px;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+}
+
+.controls button {
+    font-size: 0.8em;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    min-width: 60px;
+    text-align: center;
+}
+
+.controls button#startStop {
+    background-color: #32cf38;
+    color: rgb(255, 255, 255);
+}
+
+.controls button#startStop.running {
+    background-color: #f44336;
+}
+
+.controls button#reset {
+    background-color: #fdd835;
+    color: #222;
+}
+
+/* Update for the outer circles */
+.outer-circle {
+    position: absolute;
+    width: 200px; /* Increased size */
+    height: 200px; /* Increased size */
+    border-radius: 50%;
+    z-index: 9;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    transform: scale(0.5);
+    perspective: 1000px; /* For the 3D flip effect */
+    cursor: pointer; /* Indicate interactivity */
+   
+}
+
+.outer-circle.visible {
+    opacity: 0.9;
+    transform: scale(1);
+}
+.circle-content {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: transform 1s;
+    transform-style: preserve-3d;
+    border-radius: 50%;
+}
+
+.outer-circle:hover .circle-content {
+    transform: rotateY(180deg);
+}
+
+.face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.front {
+    background-color: #f7e0e0; /* Default background for photo */
+}
+
+.front img {
+    width: 100%; /* Ensure the image fills the width of the parent */
+    height: 100%; /* Ensure the image fills the height of the parent */
+    border-radius: 50%; /* Keep the circular shape */
+    object-fit: cover; /* Ensure the image covers the entire area without distortion */
+}
+.back {
+    background-color: #333; /* Default background for video */
+    transform: rotateY(180deg);
+}
+
+.back video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+}
+
+/* Positioning the six outer circles farther away from the smaller central circle */
+.outer-circle:nth-child(2) { top: -20%; left: 50%; transform: translate(-50%, -50%); } /* Top */
+.outer-circle:nth-child(3) { top: 10%; left: 110%; transform: translate(-50%, -50%); } /* Top-Right */
+.outer-circle:nth-child(4) { top: 90%; left: 110%; transform: translate(-50%, -50%); } /* Bottom-Right */
+.outer-circle:nth-child(5) { top: 120%; left: 50%; transform: translate(-50%, -50%); } /* Bottom */
+.outer-circle:nth-child(6) { top: 90%; left: -10%; transform: translate(-50%, -50%); } /* Bottom-Left */
+.outer-circle:nth-child(7) { top: 10%; left: -10%; transform: translate(-50%, -50%); } /* Top-Left */
+
+.outer-circle.blash {
+    animation: blash-animation 0.5s ease-out forwards;
+}
+
+@keyframes blash-animation {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.5);
+        opacity: 0.3;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0;
+        display: none; /* Optionally hide after the effect */
+    }
+}
+
+/* Style for the video playing in the background */
+.video-background {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px; /* Slightly larger than central circle */
+    height: 350px; /* Slightly larger than central circle */
+    border-radius: 35%;
+    overflow: hidden;
+    z-index: 5; /* Behind the stopwatch but above background */
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.video-background video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.video-background.active {
+    opacity: 1;
+}
+.central-circle {
+    position: relative;
+    background-color: #e2e6d7;
+    border-radius: 50%;
+    width: 300px; /* Adjust size as needed */
+    height: 300px; /* Adjust size as needed */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 9px 5px 250px rgba(138, 164, 225, 0.7);
+    overflow: hidden; /* Ensure the video stays within the circle */
+}
+
+.central-circle video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure the video covers the entire circle */
+    border-radius: 50%; /* Keep the circular shape */
+    z-index: -1; /* Place the video behind the timer and controls */
+}

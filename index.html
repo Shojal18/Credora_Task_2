@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body{
+            background-color: #150101;
+            background-image:
+                repeating-linear-gradient(
+                    to right, transparent 0 100px,
+                    #babcc422 100px 101px
+                ),
+                repeating-linear-gradient(
+                    to bottom, transparent 0 100px,
+                    #25283b22 100px 101px
+                );
+            position: relative;
+        }
+
+        body::before{
+            position: absolute;
+            width: min(1400px, 90vw);
+            top: 10%;
+            left: 50%;
+            height: 90%;
+            transform: translateX(-50%);
+            content: '';
+            background-image: url(images/bg.png);
+            background-size: 100%;
+            background-repeat: no-repeat;
+            background-position: top center;
+            pointer-events: none;
+        }
+
+        /* Styles for the pause button */
+        #pauseButton {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #f3f8fc;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+            z-index: 1000;
+        }
+
+        #pauseButton.paused::before {
+            content: ""; /* Play symbol (Unicode) */
+        }
+
+        #pauseButton:not(.paused)::before {
+            content: "^_^"; /* Pause symbol (Unicode) */
+        }
+    </style>
+    <link rel="stylesheet" href="index.css">
+    <style>
+        .banner .model{
+            background-image: url(img/model.png); /* Changed to a static image */
+            width: 100%;
+            height: 75vh;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            background-size: auto 130%;
+            background-repeat: no-repeat;
+            background-position: top center;
+            z-index: 1;
+        }
+
+        @media screen and (max-width: 1023px) {
+            .banner .model{
+                background-size: auto 100%;
+                height: 50vh;
+            }
+        }
+
+        @media screen and (max-width: 767px) {
+            .banner .model{
+                background-size: auto 80%;
+                height: 40vh;
+            }
+        }
+
+        .sketchfab-embed-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            margin-top: 20px; /* Add some space above the model */
+            z-index: 2; /* Ensure it's above the background */
+        }
+
+        .sketchfab-embed-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <button id="pauseButton"></button>
+
+    <div class="banner">
+        <div class="sketchfab-embed-wrapper">
+           
+               
+            </p>
+        </div>
+        <div class="slider" style="--quantity: 10">
+            <div class="item" style="--position: 1"><a href="stop.html"><img src="img/img1.jpg" alt="page1.html"></a></div>
+            <div class="item" style="--position: 2"><a href="stop.html"><img src="img/img2.jpg" alt="page2.html"></a></div>
+            <div class="item" style="--position: 3"><a href="stop.html"><img src="img/img3.jpg" alt="page3.html"></a></div>
+            <div class="item" style="--position: 4"><a href="stop.html"><img src="img/img4.jpg" alt="page4.html"></a></div>
+            <div class="item" style="--position: 5"><a href="stop.html"><img src="img/img5.jpg" alt="page5.html"></a></div>
+            <div class="item" style="--position: 6"><a href="stop.html"><img src="img/img6.jpg" alt="page6.html"></a></div>
+            <div class="item" style="--position: 7"><a href="stop.html"><img src="img/img7.jpg" alt="page7.html"></a></div>
+            <div class="item" style="--position: 8"><a href="stop.css"><img src="img/img8.jpg" alt="page8.html"></a></div>
+            <div class="item" style="--position: 9"><a href="stop.html"><img src="img/img9.jpg" alt="page9.html"></a></div>
+            <div class="item" style="--position: 10"><a href="stop.html"><img src="img/img10.jpg" alt="page10.html"></a></div>
+        </div>
+        <div class="content">
+            <h1 data-content="Smart-Watch ">
+                Smart-Watch
+            </h1>
+            <div class="author">
+                <h2>AI Based</h2>
+            </div>
+            <div class="model"></div>
+        </div>
+    </div>
+
+    <script>
+        const pauseButton = document.getElementById('pauseButton');
+        const slider = document.querySelector('.slider');
+        let isPaused = false;
+
+        // Set initial state of the button to "Pause"
+        pauseButton.classList.remove('paused');
+        pauseButton.textContent = ""; // Initial state: Pause symbol
+
+        pauseButton.addEventListener('click', () => {
+            if (isPaused) {
+                slider.style.animationPlayState = 'running';
+                pauseButton.textContent = ""; // Change to Pause symbol
+                pauseButton.classList.remove('paused');
+                isPaused = false;
+            } else {
+                slider.style.animationPlayState = 'paused';
+                pauseButton.textContent = "^_^"; // Change to Play symbol
+                pauseButton.classList.add('paused');
+                isPaused = true;
+            }
+        });
+
+        const imageLinks = document.querySelectorAll('.slider .item a');
+        let tapCount = 0;
+        let tapTimeout;
+
+        imageLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault(); // Prevent single click navigation
+
+                tapCount++;
+
+                if (tapCount === 2) {
+                    // Double tap detected
+                    clearTimeout(tapTimeout);
+                    window.location.href = link.getAttribute('href');
+                } else if (tapCount === 1) {
+                    // Single tap, set a timeout to check for a second tap
+                    tapTimeout = setTimeout(() => {
+                        tapCount = 0; // Reset tap count if no second tap within the timeout
+                        // You can add single-tap functionality here if needed
+                        console.log("Single tap on image");
+                    }, 300); // Adjust the timeout (in milliseconds) as needed
+                }
+            });
+        });
+    </script>
+
+    <script src="script.js"></script>
+</body>
+</html>

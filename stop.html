@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smartwatch Layout</title>
+    <link rel="stylesheet" href="stop.css">
+    <style>
+        .outer-circle {
+            /* ... (existing outer-circle styles) ... */
+            perspective: 1000px; /* For the 3D flip effect */
+        }
+
+        .circle-content {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 1s;
+            transform-style: preserve-3d;
+            border-radius: 50%;
+        }
+
+        .outer-circle:hover .circle-content {
+            transform: rotateY(180deg);
+        }
+
+        .face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .front {
+            background-color: #eee; /* Default background for photo */
+        }
+
+        .front img {
+            max-width: 80%;
+            max-height: 80%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .back {
+            background-color: #333; /* Default background for video */
+            transform: rotateY(180deg);
+        }
+
+        .back video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="watch-container">
+        <div class="central-circle">
+            <div class="time-display">
+                <span id="minutes">00</span>:<span id="seconds">00</span>.<span id="milliseconds">00</span>
+            </div>
+            <div class="controls">
+                <button id="startStop">Start</button>
+                <button id="reset">Reset</button>
+            </div>
+        </div>
+        <div class="outer-circle" id="circle1">
+            <div class="circle-content">
+                <div class="face front"><img src="img/img1.jpg" alt="Heart"></div>
+                <div class="face back"><video src="img/6130124-hd_1920_1080_30fps.mp4"></video></div>
+            </div>
+        </div>
+        <div class="outer-circle" id="circle2">
+            <div class="circle-content">
+                <div class="face front"><img src="img/gym.jpg" alt="Gym"></div>
+                <div class="face back"><video src="img/gym.mp4" loop muted playsinline></video></div>
+            </div>
+        </div>
+        <div class="outer-circle" id="circle3">
+            <div class="circle-content">
+                <div class="face front"><img src="img/foot.jpg" alt="Sports"></div>
+                <div class="face back"><video src="img/foot.mp4" loop muted playsinline></video></div>
+            </div>
+        </div>
+        <div class="outer-circle" id="circle4">
+            <div class="circle-content">
+                <div class="face front"><img src="img/study.jpg" alt="Study"></div>
+                <div class="face back"><video src="img/study.mp4" loop muted playsinline></video></div>
+            </div>
+        </div>
+        <div class="outer-circle" id="circle5">
+            <div class="circle-content">
+                <div class="face front"><img src="img/music.jpg" alt="Music"></div>
+                <div class="face back"><video src="img/music.mp4" loop muted playsinline></video></div>
+            </div>
+        </div>
+        <div class="outer-circle" id="circle6">
+            <div class="circle-content">
+                <div class="face front"><img src="img/med.jpg" alt="Meditation"></div>
+                <div class="face back"><video src="img/me.mp4" loop muted playsinline></video></div>
+            </div>
+           
+        </div>
+        
+        </div>
+    </div>
+
+    <script src="stop.js"></script>
+    <script>
+        // ... (rest of your existing JavaScript code) ...
+
+        const outerCircles = document.querySelectorAll('.outer-circle');
+        const videos = document.querySelectorAll('.outer-circle video');
+
+        function showOuterCircles() {
+            outerCircles.forEach(circle => circle.classList.add('visible'));
+            // No need to explicitly show content here, CSS handles initial photo
+        }
+
+        function hideOuterCircles() {
+            outerCircles.forEach(circle => circle.classList.remove('visible'));
+            videos.forEach(video => video.pause()); // Pause videos when hidden
+        }
+
+        outerCircles.forEach(circle => {
+            circle.addEventListener('mouseenter', () => {
+                const video = circle.querySelector('video');
+                if (video) {
+                    setTimeout(() => {
+                        video.play();
+                    }, 1000); // 1-second delay after flip
+                }
+            });
+
+            circle.addEventListener('mouseleave', () => {
+                const video = circle.querySelector('video');
+                if (video) {
+                    video.pause();
+                    video.currentTime = 0; // Reset video to start
+                }
+            });
+        });
+
+        // ... (rest of your existing JavaScript code) ...
+    </script>
+</body>
+</html>
